@@ -71,6 +71,11 @@ usb_rawhid_class RawHID;
 FlightSimClass FlightSim;
 #endif
 
+#ifdef HOTASX_INTERFACE
+usb_hotasx_class HotasX;
+uint8_t usb_hotasx_class::manual_mode = 0;
+#endif
+
 #ifdef SEREMU_INTERFACE
 usb_seremu_class Serial;
 #endif

@@ -350,6 +350,53 @@ static uint8_t joystick_report_desc[] = {
 #endif // JOYSTICK_SIZE
 #endif // JOYSTICK_INTERFACE
 
+#ifdef HOTASX_INTERFACE
+static uint8_t hotasx_report_desc[] = {
+        0x05, 0x01,                     // Usage Page (Generic Desktop)
+        0x09, 0x04,                     // Usage (Joystick)
+        0xA1, 0x01,                     // Collection (Application)
+        0x15, 0x00,                     // Logical Minimum (0)
+        0x25, 0x01,                     // Logical Maximum (1)
+        0x75, 0x01,                     // Report Size (1)
+        0x95, 0x20,                     // Report Count (32)
+        0x05, 0x09,                     // Usage Page (Button)
+        0x19, 0x01,                     // Usage Minimum (Button #1)
+        0x29, 0x20,                     // Usage Maximum (Button #32)
+        0x81, 0x02,                     // Input (variable,absolute)
+        0x75, 0x1C,                     // Report Size (28) ////28 bits of padding
+        0x95, 0x01,                     // Report Count (1)
+        0x81, 0x03,                     // Input (const,variable,absolute)
+        0x15, 0x00,                     // Logical Minimum (0)
+        0x25, 0x07,                     // Logical Maximum (7)
+        0x35, 0x00,                     // Physical Minimum (0)
+        0x46, 0x3B, 0x01,               // Physical Maximum (315)
+        0x75, 0x04,                     // Report Size (4)
+        0x95, 0x01,                     // Report Count (1)
+        0x65, 0x14,                     // Unit (20)
+        0x05, 0x01,                     // Usage Page (Generic Desktop)
+        0x09, 0x39,                     // Usage (Hat switch)
+        0x81, 0x42,                     // Input (variable,absolute,null_state)
+        0x05, 0x01,                     // Usage Page (Generic Desktop)
+        0x09, 0x01,                     // Usage (Pointer)
+        0xA1, 0x00,                     // Collection ()
+        0x16, 0x88, 0xFA,               //   Logical Minimum (-1400)
+        0x26, 0x78, 0x05,               //   Logical Maximum (1400)
+        0x75, 0x0C,                     //   Report Size (12)
+        0x95, 0x08,                     //   Report Count (8)
+        0x09, 0x30,                     //   Usage (X)
+        0x09, 0x31,                     //   Usage (Y)
+        0x09, 0x32,                     //   Usage (Z)
+        0x09, 0x35,                     //   Usage (Rz)
+        0x09, 0x36,                     //   Usage (Slider)
+        0x09, 0x33,                     //   Usage (Rx)
+        0x09, 0x34,                     //   Usage (Ry)
+        0x09, 0x36,                     //   Usage (Slider)
+        0x81, 0x02,                     //   Input (variable,absolute)
+        0xC0,                           // End Collection
+        0xC0                            // End Collection
+};
+#endif
+
 #ifdef MULTITOUCH_INTERFACE
 // https://forum.pjrc.com/threads/32331-USB-HID-Touchscreen-support-needed
 // https://msdn.microsoft.com/en-us/library/windows/hardware/jj151563%28v=vs.85%29.aspx
@@ -561,7 +608,15 @@ static uint8_t flightsim_report_desc[] = {
 #define JOYSTICK_INTERFACE_DESC_SIZE	0
 #endif
 
-#define MTP_INTERFACE_DESC_POS		JOYSTICK_INTERFACE_DESC_POS+JOYSTICK_INTERFACE_DESC_SIZE
+#define HOTASX_INTERFACE_DESC_POS	JOYSTICK_INTERFACE_DESC_POS+JOYSTICK_INTERFACE_DESC_SIZE
+#ifdef  HOTASX_INTERFACE
+#define HOTASX_INTERFACE_DESC_SIZE	9+9+7
+#define HOTASX_HID_DESC_OFFSET	HOTASX_INTERFACE_DESC_POS+9
+#else
+#define HOTASX_INTERFACE_DESC_SIZE	0
+#endif
+
+#define MTP_INTERFACE_DESC_POS		HOTASX_INTERFACE_DESC_POS+HOTASX_INTERFACE_DESC_SIZE
 #ifdef  MTP_INTERFACE
 #define MTP_INTERFACE_DESC_SIZE		9+7+7+7
 #else
@@ -1260,6 +1315,35 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
         JOYSTICK_INTERVAL,                      // bInterval
 #endif // JOYSTICK_INTERFACE
 
+#ifdef HOTASX_INTERFACE
+        // interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
+        9,                                      // bLength
+        4,                                      // bDescriptorType
+        HOTASX_INTERFACE,                       // bInterfaceNumber
+        0,                                      // bAlternateSetting
+        1,                                      // bNumEndpoints
+        0x03,                                   // bInterfaceClass (0x03 = HID)
+        0x00,                                   // bInterfaceSubClass
+        0x00,                                   // bInterfaceProtocol
+        0,                                      // iInterface
+        // HID interface descriptor, HID 1.11 spec, section 6.2.1
+        9,                                      // bLength
+        0x21,                                   // bDescriptorType
+        0x11, 0x01,                             // bcdHID
+        0,                                      // bCountryCode
+        1,                                      // bNumDescriptors
+        0x22,                                   // bDescriptorType
+        LSB(sizeof(hotasx_report_desc)),      // wDescriptorLength
+        MSB(sizeof(hotasx_report_desc)),
+        // endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
+        7,                                      // bLength
+        5,                                      // bDescriptorType
+        HOTASX_ENDPOINT | 0x80,               // bEndpointAddress
+        0x03,                                   // bmAttributes (0x03=intr)
+        HOTASX_SIZE, 0,                       // wMaxPacketSize
+        HOTASX_INTERVAL,                      // bInterval
+#endif // HOTASX_INTERFACE
+
 #ifdef MTP_INTERFACE
         // interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
         9,                                      // bLength
@@ -1863,6 +1947,10 @@ const usb_descriptor_list_t usb_descriptor_list[] = {
 #ifdef JOYSTICK_INTERFACE
         {0x2200, JOYSTICK_INTERFACE, joystick_report_desc, sizeof(joystick_report_desc)},
         {0x2100, JOYSTICK_INTERFACE, config_descriptor+JOYSTICK_HID_DESC_OFFSET, 9},
+#endif
+#ifdef HOTASX_INTERFACE
+        {0x2200, HOTASX_INTERFACE, hotasx_report_desc, sizeof(hotasx_report_desc)},
+        {0x2100, HOTASX_INTERFACE, config_descriptor+HOTASX_HID_DESC_OFFSET, 9},
 #endif
 #ifdef RAWHID_INTERFACE
 	{0x2200, RAWHID_INTERFACE, rawhid_report_desc, sizeof(rawhid_report_desc)},

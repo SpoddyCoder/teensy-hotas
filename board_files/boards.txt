@@ -1218,6 +1218,10 @@ teensy31.menu.usb.hid.fake_serial=teensy_gateway
 teensy31.menu.usb.serialhid=Serial + Keyboard + Mouse + Joystick
 teensy31.menu.usb.serialhid.build.usbtype=USB_SERIAL_HID
 teensy31.menu.usb.serialhid.upload_port.usbtype=USB_SERIAL_HID
+teensy31.menu.usb.hotasx=Hotas X
+teensy31.menu.usb.hotasx.build.usbtype=USB_HOTASX
+#(un)comment to enable/disable Hotas X serial emulation
+#teensy31.menu.usb.hotasx.fake_serial=teensy_gateway
 teensy31.menu.usb.midi=MIDI
 teensy31.menu.usb.midi.build.usbtype=USB_MIDI
 teensy31.menu.usb.midi.upload_port.usbtype=USB_MIDI

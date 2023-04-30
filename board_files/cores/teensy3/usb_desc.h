@@ -342,6 +342,41 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define ENDPOINT6_CONFIG	ENDPOINT_TRANSMIT_ONLY
   #define ENDPOINT7_CONFIG	ENDPOINT_TRANSMIT_ONLY
 
+#elif defined(USB_HOTASX)
+  //(un)comment (and line in boards.txt) to enable/disable serial emulation
+  #define HOTASX_AND_SEREMU
+  #define VENDOR_ID		0x16C0
+  #define PRODUCT_ID		0x0484
+  #define MANUFACTURER_NAME	{'O','p','e','n'}
+  #define MANUFACTURER_NAME_LEN	4
+  #define PRODUCT_NAME		{'H','o','t','a','s',' ','X'}
+  #define PRODUCT_NAME_LEN	7
+  #define EP0_SIZE		64
+  #ifdef HOTASX_AND_SEREMU
+    #define NUM_ENDPOINTS         3
+    #define NUM_INTERFACE		2
+  #else
+    #define NUM_ENDPOINTS         1
+    #define NUM_INTERFACE		1
+  #endif
+  #define NUM_USB_BUFFERS	24
+  #define HOTASX_INTERFACE    0	// Joystick
+  #define HOTASX_ENDPOINT     1
+  #define HOTASX_SIZE         20
+  #define HOTASX_INTERVAL     1
+  #define ENDPOINT1_CONFIG	ENDPOINT_TRANSMIT_ONLY
+  #ifdef HOTASX_AND_SEREMU
+    #define SEREMU_INTERFACE      1	// Serial emulation
+    #define SEREMU_TX_ENDPOINT    2
+    #define SEREMU_TX_SIZE        64
+    #define SEREMU_TX_INTERVAL    1
+    #define SEREMU_RX_ENDPOINT    3
+    #define SEREMU_RX_SIZE        32
+    #define SEREMU_RX_INTERVAL    2
+    #define ENDPOINT2_CONFIG	ENDPOINT_TRANSMIT_ONLY
+    #define ENDPOINT3_CONFIG	ENDPOINT_RECEIVE_ONLY
+  #endif
+
 #elif defined(USB_TOUCHSCREEN)
   #define VENDOR_ID		0x16C0
   #define PRODUCT_ID		0x04D3
