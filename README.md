@@ -53,7 +53,8 @@ Updated and expanded for 2023 by SpoddyCoder.
 * Replace the teensy3 board files with the modified ones, which add the Hotas X USB interface
     * Copy `board_files` to the location of the teensy3 board files on your machine (see Help)
     * You may want to backup the existing files before overwriting them
-    * Diff between original files and modified ones: TODO
+    * Diff between original files and modified...
+        * https://github.com/SpoddyCoder/teensy-hotas/commit/bcc00d9c30cdf59a3ea81ee41fbe30af6508d4a3
 * Open `teensy-hotas.ino` in the Arduino IDE
 * Select the targets;
     * Tools -> Board -> Teensy 3.2/3.1
