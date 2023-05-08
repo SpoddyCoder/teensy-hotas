@@ -18,7 +18,10 @@ Updated and expanded for 2023 by SpoddyCoder.
 * 4 hat-switch inputs
     * Up, Down, Left, Right
 * 16 button inputs
-* Switchable throttle control mode
+* Calibration mode for the anlogue axes
+    * Results saved to EEPROM
+    * And reloaded when the unit is powered on
+* Switchable throttle control mode (TODO)
     * Standard 0-100%
         * For standard flight sims
     * Centre zero
@@ -33,7 +36,7 @@ Updated and expanded for 2023 by SpoddyCoder.
     * Simple moving average
     * One euro filter
     * Kalman filter
-    * Each has configurable paramaters to balance smoothing against input lag
+    * Each has configurable paramaters to allow you to balance smoothing against input lag
 * Optional serial debug
 
 ## Pre-requisites
@@ -64,7 +67,16 @@ Updated and expanded for 2023 by SpoddyCoder.
 
 ## Configure
 
-All configurable paramaters are `#define`d in the `teensy-hotas.ino`.
+* All configurable paramaters are `#define`d in the `teensy-hotas.ino`.
+
+## Calibration
+
+* Hold the PRESET + MAPPING buttons together for 5 seconds to enter calibration mode
+* The PRESET LED will flash
+* Move all your analouge axes to their full limits
+* Hold the PRESET + MAPPING buttons together for 5 seconds to exit calibration mode
+* The updated axes ranges will be saved to the Teensy EEPROM
+* They are re-loaded when the unit is powered on
 
 ## Help
 
@@ -85,11 +97,6 @@ Pull requests are welcome.
 
 * Finish centre-zero throttle mode and deadzone handling
 * Add limit deadzones for the rest of the axes
-* Calibration mode that allows measurement of min-max ranges for each axis
-    * button or button combination puts the stick into/out of calibration mode
-    * user moves the hardware to range limits and the software sets scaling factor for each axis
-    * results saved to EEPROM
-    * scaling factor used to scale the send value from MIN_AVAL to MAX_AVAL, as expected by the controller class
 
 ## References + Attribution
 
