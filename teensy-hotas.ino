@@ -2,7 +2,7 @@
 // based on Paul Stoffregen's Extreme Joystick Test
 // modiupdated + expanded by SpoddyCoder, 2023
 // https://github.com/SpoddyCoder/teensy-hotas
-// v2.2
+// v2.2.1
 
 #include <EEPROM.h>
 
@@ -12,11 +12,13 @@
  *************************************************/
 
 // serial monitor debug
+// NOTE:  the joystick will only work with IDE open if serial debugging is enabled
+//        therefore ensure these two flags are disabled for a production build
 #if defined(SEREMU_INTERFACE) || (defined(CDC_STATUS_INTERFACE) && defined(CDC_DATA_INTERFACE))
   #define SERIAL_ENABLED
 #endif
-#define SERIAL_DEBUG 1  // set to true to send useful debug data after initial setup + calibration
-#define SERIAL_DEBUG_LOOP 0 // set to true to send raw + filtered analogue values to serial monitor during the main loop
+#define SERIAL_DEBUG 0  // send useful debug data after initial setup + calibration
+#define SERIAL_DEBUG_LOOP 0 // send raw + filtered analogue values to serial monitor during the main loop
 
 // calibration
 #define LOOP_DELAY 5 // ms, throttles the joystick send, eg: 5ms is very approximately 200Hz refresh
